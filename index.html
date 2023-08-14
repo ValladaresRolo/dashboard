@@ -5,6 +5,23 @@
     <title>DashBoard</title>
 </head>
 <body>
+
+    <div class="container text-center w-25 mt-4">
+        <form>
+            <input class="form-control" type="text" placeholder="Ingresa un pokemon">
+            <button class="btn btn-success mt-2" onclick="fetchApi(event)">Buscar</button>
+        </form>
+       
+    </div>
+
+
+
+
+
+    <div>
+        <canvas id="myChart"></canvas>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.3/dist/chart.umd.min.js"></script>
     <script src="script.js" type="module"></script>
 </body>

@@ -5,8 +5,8 @@ sayHi1()*/
 
 import { fetchApi } from "./fetch.js";
 
-let magnitudes = []; // arreglo para guardar los datos
-let geographicReferences = [];
+let valoresUf = []; // arreglo para guardar los datos
+let fechas = [];
 
 // esto es para el color
 const rgbaRedColor = 'rgba(255, 99, 132, 0.2)';
@@ -17,29 +17,32 @@ const rgbOrangeColor = 'rgb(255, 159, 64)';
 
 
 async function renderData() {
-    const earthquakes = await fetchApi('https://api.gael.cloud/general/public/sismos')  // llamo a la api
-    //.then(data => console.log(data)) // pa saber si la data llega
-    magnitudes = earthquakes.map(earthquake => earthquake.Magnitud) // .map itera todo el arreglo y devuelve un arreglo nuevo
-    geographicReferences = earthquakes.map(earthquake => earthquake.RefGeografica)// .map itera todo el arreglo y devuelve un arreglo nuevo
+    
+    const valoresCuota = await fetchApi('https://www.quetalmiafp.cl/api/Cuota/ObtenerCuotas?listaAFPs=MODELO&listaFondos=C&fechaInicial=01%2F05%2F2023&fechaFinal=13%2F08%2F2023');
 
-    const backgroundColors = magnitudes.map(magnitude => magnitude > 3 ? rgbaRedColor : rgbaOrangeColor)  // aca doy instruccion de color 
-    const borderColors = magnitudes.map(magnitude => magnitude > 3 ? rgbRedColor : rgbOrangeColor)  // aca doy instruccion de color 
 
-    console.log('magnitudes: ', magnitudes); // compruebo los datos
-    console.log('geographicReference: ', geographicReferences) // compruebo los datos
+  //.then(data => console.log(data)) // pa saber si la data llega
+    valoresUf = valoresCuota.map(valorCuota => valorCuota.valorUf) // .map itera todo el arreglo y devuelve un arreglo nuevo
+    fechas = valoresCuota.map(valorCuota => valorCuota.fecha)// .map itera todo el arreglo y devuelve un arreglo nuevo
+
+    const backgroundColors = valoresUf.map(valorUf => valorUf > 3 ? rgbaRedColor : rgbaOrangeColor)  // aca doy instruccion de color 
+    const borderColors = valoresUf.map(valorUf => valorUf > 3 ? rgbRedColor : rgbOrangeColor)  // aca doy instruccion de color 
+
+    console.log('valoresUf: ', valoresUf); // compruebo los datos
+    console.log('fechas: ', fechas) // compruebo los datos
 
     const ctx = document.getElementById('myChart');
 
     new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
             //labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            labels: geographicReferences,
+            labels: fechas,
             datasets: [{
                 //label: '# of Votes',
                 //data: [12, 19, 3, 5, 2, 3],
                 label: 'Magitud de terremoto',
-                data: magnitudes,
+                data: valoresUf,
                 backgroundColor: backgroundColors,
                 borderColor: borderColors,
                 borderWidth: 1
@@ -48,7 +51,9 @@ async function renderData() {
         options: {
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: false,
+                    suggestedMin: 35800,
+                    suggestedMax: 36000
                 }
             },
 
