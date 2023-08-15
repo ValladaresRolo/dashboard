@@ -8,9 +8,36 @@
 
     <div class="container text-center w-25 mt-4">
         <form>
-            <input class="form-control" type="text" placeholder="Ingresa un pokemon">
+           
+
+            <select class="form-select" id="afp" aria-label="Default select example">
+                <option selected disabled="disabled">Seleciona AFP </option>
+                <option value="CAPITAL">AFP Capital</option>
+                <option value="CUPRUM">AFP Cuprum</option>
+                <option value="HABITAT">AFP Habitat</option>
+                <option value="MODELO">AFP Modelo</option>
+                <option value="PLANVITAL">AFP PlanVital</option>
+                <option value="PROVIDA">AFP ProVida</option>
+                <option value="UNO">AFP Uno</option>
+              </select>
+
+
+              <select class="form-select" id="fondo" aria-label="Default select example">
+                <option selected disabled="disabled">Seleciona FONDO </option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+              </select>
+
             <button class="btn btn-success mt-2" onclick="fetchApi(event)">Buscar</button>
+
+            
         </form>
+
+
+
        
     </div>
 
