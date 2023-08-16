@@ -14,8 +14,9 @@ const rgbOrangeColor = 'rgb(255, 159, 64)';
 const form = document.querySelector("form");
 const afpSelect = document.querySelector("#afp");
 const fondoSelect = document.querySelector("#fondo");
+const button = document.querySelector("#boton")
 
-form.addEventListener("click", (event) => {
+button.addEventListener("click", (event) => {
     event.preventDefault();
 
     const afp = afpSelect.value;
