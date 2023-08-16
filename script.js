@@ -2,6 +2,7 @@ import { fetchApi } from "./fetch.js";
 
 let valoresUf = []; // arreglo para guardar los datos
 let fechas = [];
+let myChart = null; // tiene que ser global esta para reemplazr
 
 // esto es para el color
 const rgbaRedColor = 'rgba(255, 99, 132, 0.2)';
@@ -14,30 +15,14 @@ const rgbOrangeColor = 'rgb(255, 159, 64)';
 const form = document.querySelector("form");
 const afpSelect = document.querySelector("#afp");
 const fondoSelect = document.querySelector("#fondo");
-const button = document.querySelector("#boton")
-
-button.addEventListener("click", (event) => {
-    event.preventDefault();
-
-    const afp = afpSelect.value;
-    const fondo = fondoSelect.value;
-    console.log(afp, fondo);
-
-    renderData(afp, fondo)
-
-});
+const button = document.querySelector("#boton");
 
 
 async function renderData(afp, fondo) {
 
     console.log(afp, fondo);
     const urlApi = (`https://www.quetalmiafp.cl/api/Cuota/ObtenerCuotas?listaAFPs=${afp}&listaFondos=${fondo}&fechaInicial=01%2F05%2F2023&fechaFinal=13%2F08%2F2023`);
-
-
-
-    const valoresCuota = await fetchApi(urlApi);
-
-    // const valoresCuota = await fetchApi(`https://www.quetalmiafp.cl/api/Cuota/ObtenerCuotas?listaAFPs=${afp}&listaFondos=${fondo}&fechaInicial=01%2F05%2F2023&fechaFinal=13%2F08%2F2023`);  
+    const valoresCuota = await fetchApi(urlApi);     
 
 
     console.log(urlApi);
@@ -52,27 +37,24 @@ async function renderData(afp, fondo) {
     console.log('valoresUf: ', valoresUf); // compruebo los datos
     console.log('fechas: ', fechas) // compruebo los datos
 
-    // Creas una variable para guardar la instancia de la gráfica
-var myChart;
+    // Creas una variable local para guardar la instancia de la gráfica
+    
+    
 
-// Obtienes el contexto del canvas
-const ctx = document.getElementById('myChart');
+    // Obtienes el contexto del canvas
+    const ctx = document.getElementById('myChart');
 
-// Antes de crear la gráfica, destruyes la anterior si existe
-if (myChart) {
-  myChart.destroy();
-}
+    if (myChart) {
+        myChart.destroy();
+    }//esto es para destuir el chart
 
-// Luego creas la nueva gráfica con el mismo canvas y guardas la instancia en la variable
-myChart = new Chart(ctx, {
+    // Luego creas la nueva gráfica con el mismo canvas y guardas la instancia en la variable solo si es null
+    myChart = new Chart(ctx, { 
         type: 'line',
         data: {
-            //labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
             labels: fechas,
             datasets: [{
-                //label: '# of Votes',
-                //data: [12, 19, 3, 5, 2, 3],
-                label: 'Magitud de terremoto',
+                label: 'Valor cuota',
                 data: valoresUf,
                 backgroundColor: backgroundColors,
                 borderColor: borderColors,
@@ -99,7 +81,7 @@ myChart = new Chart(ctx, {
                                 label += ': ';
                             }
                             if (context.parsed.y !== null) {
-                                label += context.parsed.y + '°';  // modifeica el texto renderisado
+                                label += context.parsed.y + 'UF';  // modifeica el texto renderisado
                             }
                             return label;
                         }
@@ -111,3 +93,15 @@ myChart = new Chart(ctx, {
     });
 }
 //renderData();
+
+button.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    const afp = afpSelect.value;
+    const fondo = fondoSelect.value;
+    console.log(afp, fondo);
+    
+    renderData(afp, fondo);
+
+
+});
