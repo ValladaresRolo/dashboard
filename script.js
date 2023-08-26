@@ -58,6 +58,16 @@ async function renderData(afp, fondo, inDate, outDate) {
     console.log('fechas: ', fechas) // compruebo los datos
 
 
+    // saber maximo y minimo valor cuota
+
+    let ufValores = valoresUf;
+    let max = Math.max(...ufValores);
+    let min = Math.min(...ufValores);
+    //operador de propagación (...) para pasar todos los elementos del array
+    console.log("Máximo:", max);
+    console.log("Mínimo:", min);
+
+
 
 
     // Obtienes el contexto del canvas
@@ -84,8 +94,8 @@ async function renderData(afp, fondo, inDate, outDate) {
             scales: {
                 y: {
                     beginAtZero: false,
-                    suggestedMin: 35800,
-                    suggestedMax: 36000
+                    suggestedMin: max,
+                    suggestedMax: min
                 }
             },
 
