@@ -1,8 +1,23 @@
 import { fetchApi } from "./fetch.js";
 
+
+//funcion jquery para el datapicker
+$(function () {
+
+    $('.input-daterange input').each(function () {
+        $(this).datepicker({
+            language: 'es',
+            
+        });
+    });
+  
+});
+
 let valoresUf = []; // arreglo para guardar los datos
 let fechas = [];
 let myChart = null; // tiene que ser global esta para reemplazr
+
+
 
 // esto es para el color
 const rgbaRedColor = 'rgba(255, 99, 132, 0.2)';
@@ -11,18 +26,19 @@ const rgbRedColor = 'rgb(255, 99, 132)';
 const rgbaOrangeColor = 'rgba(255, 159, 64, 0.2)';
 const rgbOrangeColor = 'rgb(255, 159, 64)';
 
-
+// valor desde el formulario
 const form = document.querySelector("form");
 const afpSelect = document.querySelector("#afp");
 const fondoSelect = document.querySelector("#fondo");
 const button = document.querySelector("#boton");
+const dateIn = document.querySelector("#dateIn");
+const dateOut = document.querySelector("#dateOut");
 
+async function renderData(afp, fondo, inDate, outDate) {
 
-async function renderData(afp, fondo) {
-
-    console.log(afp, fondo);
+    console.log(afp, fondo, inDate, outDate);
     const urlApi = (`https://www.quetalmiafp.cl/api/Cuota/ObtenerCuotas?listaAFPs=${afp}&listaFondos=${fondo}&fechaInicial=01%2F05%2F2023&fechaFinal=13%2F08%2F2023`);
-    const valoresCuota = await fetchApi(urlApi);     
+    const valoresCuota = await fetchApi(urlApi);
 
 
     console.log(urlApi);
@@ -37,9 +53,8 @@ async function renderData(afp, fondo) {
     console.log('valoresUf: ', valoresUf); // compruebo los datos
     console.log('fechas: ', fechas) // compruebo los datos
 
-    // Creas una variable local para guardar la instancia de la gráfica
-    
-    
+
+
 
     // Obtienes el contexto del canvas
     const ctx = document.getElementById('myChart');
@@ -49,7 +64,7 @@ async function renderData(afp, fondo) {
     }//esto es para destuir el chart
 
     // Luego creas la nueva gráfica con el mismo canvas y guardas la instancia en la variable solo si es null
-    myChart = new Chart(ctx, { 
+    myChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: fechas,
@@ -94,14 +109,20 @@ async function renderData(afp, fondo) {
 }
 //renderData();
 
+
+
+
+
 button.addEventListener("click", (event) => {
     event.preventDefault();
 
     const afp = afpSelect.value;
-    const fondo = fondoSelect.value;
-    console.log(afp, fondo);
-    
-    renderData(afp, fondo);
+    const fondo = fondoSelect.value; 
+    const inDate = dateIn.value;
+    const outDate = dateOut.value;   
+
+    console.log(afp, fondo, inDate, outDate);
+    renderData(afp, fondo, inDate, outDate);
 
 
 });
