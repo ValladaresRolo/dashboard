@@ -7,15 +7,16 @@ $(function () {
     $('.input-daterange input').each(function () {
         $(this).datepicker({
             language: 'es',
-            
+
         });
     });
-  
+
 });
 
 let valoresUf = []; // arreglo para guardar los datos
 let fechas = [];
 let myChart = null; // tiene que ser global esta para reemplazr
+let date = null;
 
 
 
@@ -34,10 +35,13 @@ const button = document.querySelector("#boton");
 const dateIn = document.querySelector("#dateIn");
 const dateOut = document.querySelector("#dateOut");
 
+
+
+//funcion consulta y crea el chart
 async function renderData(afp, fondo, inDate, outDate) {
 
     console.log(afp, fondo, inDate, outDate);
-    const urlApi = (`https://www.quetalmiafp.cl/api/Cuota/ObtenerCuotas?listaAFPs=${afp}&listaFondos=${fondo}&fechaInicial=01%2F05%2F2023&fechaFinal=13%2F08%2F2023`);
+    const urlApi = (`https://www.quetalmiafp.cl/api/Cuota/ObtenerCuotas?listaAFPs=${afp}&listaFondos=${fondo}&fechaInicial=${inDate}&fechaFinal=${outDate}`);
     const valoresCuota = await fetchApi(urlApi);
 
 
@@ -109,20 +113,31 @@ async function renderData(afp, fondo, inDate, outDate) {
 }
 //renderData();
 
-
-
-
+// funcion cambia formato fecha
+function formatDate(date) {
+    return encodeURIComponent(date);
+}
+/* /*/
 
 button.addEventListener("click", (event) => {
     event.preventDefault();
 
     const afp = afpSelect.value;
-    const fondo = fondoSelect.value; 
-    const inDate = dateIn.value;
-    const outDate = dateOut.value;   
+    const fondo = fondoSelect.value;
+    let inDate = formatDate(dateIn.value);
+    let outDate = formatDate(dateOut.value);
 
-    console.log(afp, fondo, inDate, outDate);
+
+    /*
+     console.log(inDate); // Output: 
+ 
+    
+     console.log(outDate); // Output: 
+ 
+ 
+     console.log(afp, fondo, inDate, outDate);
+ 
+ */
+
     renderData(afp, fondo, inDate, outDate);
-
-
 });
