@@ -8,9 +8,17 @@ const month = String(today.getMonth() + 1).padStart(2, '0');
 const day = String(today.getDate()).padStart(2, '0');
 const formattedDate = `${day}/${month}/${year}`;
 
-// asgno el formato de hoy a input 
+const mMonth = String(today.getMonth() - 1).padStart(2, '0');
+const formattedDateIn = `${day}/${mMonth}/${year}`;
+
+
+
+// asgno el dia de hoy a input 
 const dateOutInput = document.getElementById("dateOut");
 dateOutInput.value = formattedDate;
+// asgno el mes anterior a input 
+const dateOutInputIn = document.getElementById("dateIn");
+dateOutInputIn.value = formattedDateIn;
 
 
 //funcion jquery para el datapicker
