@@ -1,12 +1,29 @@
 import { fetchApi } from "./fetch.js";
 
 
+/* obtener el dia de hoy y dar formato */
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, '0');
+const day = String(today.getDate()).padStart(2, '0');
+const formattedDate = `${day}/${month}/${year}`;
+
+// asgno el formato de hoy a input 
+const dateOutInput = document.getElementById("dateOut");
+dateOutInput.value = formattedDate;
+
+
 //funcion jquery para el datapicker
 $(function () {
 
     $('.input-daterange input').each(function () {
         $(this).datepicker({
-            language: 'es',
+           
+            language: "es",
+        autoclose: true,
+        startDate: "01/08/2002",
+        
+
 
         });
     });
@@ -18,15 +35,6 @@ let fechas = [];
 let myChart = null; // tiene que ser global esta para reemplazr
 let date = null;
 
-
-
-// esto es para el color
-const rgbaRedColor = 'rgba(255, 99, 132, 0.2)';
-const rgbRedColor = 'rgb(255, 99, 132)';
-
-const rgbaOrangeColor = 'rgba(255, 159, 64, 0.2)';
-const rgbOrangeColor = 'rgb(255, 159, 64)';
-
 // valor desde el formulario
 const form = document.querySelector("form");
 const afpSelect = document.querySelector("#afp");
@@ -34,7 +42,6 @@ const fondoSelect = document.querySelector("#fondo");
 const button = document.querySelector("#boton");
 const dateIn = document.querySelector("#dateIn");
 const dateOut = document.querySelector("#dateOut");
-
 
 
 //funcion consulta y crea el chart
@@ -51,8 +58,7 @@ async function renderData(afp, fondo, inDate, outDate) {
     valoresUf = valoresCuota.map(valorCuota => valorCuota.valorUf) // .map itera todo el arreglo y devuelve un arreglo nuevo
     fechas = valoresCuota.map(valorCuota => valorCuota.fecha)// .map itera todo el arreglo y devuelve un arreglo nuevo
 
-    const backgroundColors = valoresUf.map(valorUf => valorUf > 3 ? rgbaRedColor : rgbaOrangeColor)  // aca doy instruccion de color 
-    const borderColors = valoresUf.map(valorUf => valorUf > 3 ? rgbRedColor : rgbOrangeColor)  // aca doy instruccion de color 
+    
 
     console.log('valoresUf: ', valoresUf); // compruebo los datos
     console.log('fechas: ', fechas) // compruebo los datos
@@ -78,15 +84,38 @@ async function renderData(afp, fondo, inDate, outDate) {
     }//esto es para destuir el chart
 
     // Luego creas la nueva gráfica con el mismo canvas y guardas la instancia en la variable solo si es null
+    const labelTopchart = `valor Cuota UF AFP ${afp} en Fondo ${fondo}`;
     myChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: fechas,
             datasets: [{
-                label: 'Valor cuota',
+                label: labelTopchart,
                 data: valoresUf,
-                backgroundColor: backgroundColors,
-                borderColor: borderColors,
+               //color del borde dependiendo del maximo y minimo
+              borderColor: function (context) {
+                    const value = context.dataset.data[context.dataIndex];
+                    const min = Math.min(...context.dataset.data);
+                    const max = Math.max(...context.dataset.data);
+                    const scale = (value - min) / (max - min);
+                    /*const red = 255;
+                    const green = Math.round(scale * 255);
+                    const blue = Math.round(scale * 255);*/
+                    const red = scale * 255;
+                    const green = 0;
+                    const blue = (1 - scale) * 255;
+                    return `rgb(${red}, ${green}, ${blue})`;
+                },
+                pointBackgroundColor: function (context) {
+                    const value = context.dataset.data[context.dataIndex];
+                    const min = Math.min(...context.dataset.data);
+                    const max = Math.max(...context.dataset.data);
+                    const scale = (value - min) / (max - min);
+                    const red = scale * 255;
+                    const green = 0;
+                    const blue = (1 - scale) * 255;
+                    return `rgb(${red}, ${green}, ${blue})`;
+                },
                 borderWidth: 1
             }]
         },
@@ -94,8 +123,8 @@ async function renderData(afp, fondo, inDate, outDate) {
             scales: {
                 y: {
                     beginAtZero: false,
-                    suggestedMin: max,
-                    suggestedMax: min
+                    suggestedMin: max, // max del valor maximo del valor Cuota
+                    suggestedMax: min // min del valor minimo del valor Cuota
                 }
             },
 
@@ -123,11 +152,17 @@ async function renderData(afp, fondo, inDate, outDate) {
 }
 //renderData();
 
+
+
+
 // funcion cambia formato fecha
 function formatDate(date) {
     return encodeURIComponent(date);
 }
 /* /*/
+
+
+
 
 button.addEventListener("click", (event) => {
     event.preventDefault();
